@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адаптивная плавная заставка с PNG изображением</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            overflow: hidden;
+        }
+        #image {
+            opacity: 0;
+            transition: opacity 1.5s;
+            width: 80%; /* Пример использования процентов для адаптивности */
+            max-width: 100%; /* Максимальная ширина изображения не больше 100% ширины экрана */
+            height: auto;
+        }
+        @media (max-width: 768px) {
+            #image {
+                width: 100%; /* На маленьких экранах изображение занимает всю ширину */
+            }
+        }
+    </style>
+</head>
+<body>
+    <img id="image" src="lisfr_logo.png" alt="PNG изображение">
+    <script>
+        window.onload = function() {
+            const img = document.getElementById('image');
+            setTimeout(() => {
+                img.style.opacity = 1;
+            }, 500); // Задержка перед началом появления
+
+            setTimeout(() => {
+                img.style.opacity = 0;
+                setTimeout(() => {
+                    // Переход на главную страницу после завершения анимации
+                    window.location.href = 'index.html'; // Замените 'index.html' на актуальный путь к вашей главной странице
+                }, 1000); // Дополнительная задержка перед переходом
+            }, 3500); // Время исчезновения (3 секунды + 1.5 секунды на появление)
+        }
+    </script>
+</body>
+</html>
