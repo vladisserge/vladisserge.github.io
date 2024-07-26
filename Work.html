@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .wrapper {
+            position: relative;
+            width: 75%;
+            height: 75%;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0; /* Начальное состояние: скрыто */
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        .preview-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('miro_preview.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        .loading-spinner {
+            position: absolute;
+            bottom: 85px; /* Поднимем спиннер немного выше */
+            width: 50px; /* Ширина спиннера */
+            height: 50px; /* Высота спиннера */
+            border: 5px solid gray; /* Окантовка спиннера */
+            border-top: 5px solid black; /* Цвет вращающейся части спиннера */
+            border-radius: 50%; /* Круглая форма спиннера */
+            animation: spin 1s linear infinite; /* Ускоренное вращение спиннера */
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .miro-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper" id="wrapper">
+        <div class="preview-container" id="previewContainer">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="miro-container" id="miroContainer">
+            <iframe src="https://miro.com/app/board/uXjVN0zJw3U=" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Сначала плавно показываем фон
+            document.getElementById('wrapper').style.opacity = '1';
+
+            setTimeout(function() {
+                document.getElementById('previewContainer').style.opacity = '0'; // Заставка исчезает
+                document.getElementById('miroContainer').style.opacity = '1'; // Появляется содержимое iframe
+            }, 10000); // Заставка показывается 10 секунд
+        };
+    </script>
+</body>
+</html>
