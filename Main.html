@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Is Strange Fan Reboot</title>
+    <style>
+        /* Подключение шрифта Helvetica */
+        @font-face {
+            font-family: 'Helvetica';
+            src: url('Fonts/Helvetica.ttf') format('truetype');
+        }
+
+        /* Общие стили для всей страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Helvetica', Arial, sans-serif;
+            height: 100vh; /* Заполняем весь экран */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Стили для заставки */
+        .splash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Начальная прозрачность для анимации появления */
+            transition: opacity 1s ease-in-out;
+            z-index: 2;
+        }
+        .splash img {
+            width: 80%;
+            max-width: 100%;
+            height: auto;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+        }
+        @media (max-width: 768px) {
+            .splash img {
+                width: 100%;
+            }
+        }
+
+        /* Стили для меню */
+        .menu-container {
+            position: fixed;
+            top: -100%; /* Начальное положение за пределами экрана */
+            width: 100%;
+            z-index: 1000;
+            transition: top 0.5s ease-in-out; /* Анимация выезда сверху */
+        }
+        .menu {
+            list-style-type: none;
+            padding: 10px 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #444;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            transform: translateY(-100%); /* Начально выезжаем за пределы экрана */
+            transition: transform 0.5s ease-in-out; /* Анимация выезда сверху */
+        }
+        .menu.show {
+            transform: translateY(0); /* Выезжаем сверху на видимую область экрана */
+        }
+        .menu li {
+            display: inline;
+            margin: 0 10px;
+        }
+        .menu li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+        }
+        .menu li a:hover {
+            background-color: #666;
+        }
+
+        /* Стили для содержимого */
+        .content {
+            padding: 20px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .content.show {
+            opacity: 1;
+        }
+
+        /* Стили для переключателя языка */
+        .language-switcher-container {
+            position: fixed;
+            top: 65px;
+            right: 10px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .language-switcher-container.show {
+            opacity: 1;
+        }
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #444;
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: #fff;
+        }
+        .language-switcher select {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            margin-left: 5px;
+            padding: 5px;
+            border-radius: 15px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Стили для видео */
+        .video-container {
+            position: absolute;
+            top: 120px; /* Отступ от верха для видео */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #background-video {
+            width: 75vw; /* 75% от ширины экрана */
+            height: auto; /* Сохраняем пропорции */
+            opacity: 0; /* Начальная прозрачность для анимации появления */
+            border-radius: 20px; /* Скругленные углы */
+            transition: opacity 1s ease-in-out; /* Анимация появления видео */
+        }
+
+        /* Стили для контента с прокруткой */
+        .scroll-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #000;
+        }
+        .scroll-content {
+            padding: 20px;
+        }
+
+        /* Стили для кнопки */
+        .button-container {
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #666;
+        }
+
+        /* Стили для затемнения */
+        .fade-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 10000;
+            pointer-events: none; /* Отключаем взаимодействие с элементом */
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-container">
+        <!-- Заставка с изображением -->
+        <div class="splash">
+            <img src="lisfr_logo.png" alt="PNG изображение">
+        </div>
+
+        <!-- Контейнер для меню -->
+        <div class="menu-container">
+            <!-- Меню -->
+            <ul class="menu">
+                <li><a href="#" data-translate="menu.home">Home</a></li>
+                <li><a href="#" data-translate="menu.donate">Donate</a></li>
+                <li><a href="#" data-translate="menu.history">History</a></li>
+                <li><a href="Contacts.html" data-translate="menu.contacts">Contacts</a></li>
+            </ul>
+        </div>
+
+        <!-- Контейнер для переключателя языка -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <span>LAN</span>
+                <select id="language-selector">
+                    <option value="eng">ENG</option>
+                    <option value="rus">RUS</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Контейнер для видео -->
+        <div class="video-container">
+            <video id="background-video" src="trailer_lis.mp4" loop muted playsinline preload="auto"></video>
+        </div>
+
+        <!-- Содержимое страницы -->
+        <div class="content">
+            <div class="scroll-content">
+                <h2 data-translate="welcome">A game that takes the Life Is Strange to the next level.</h2>
+                <div class="button-container">
+                    <button class="button" onclick="showFadeOverlay()">
+                        See our work
+                    </button>
+                </div>
+                <!-- Здесь может быть больше контента, который будет прокручиваться -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Затемняющий слой -->
+    <div class="fade-overlay" id="fade-overlay"></div>
+
+    <!-- Скрипт для анимации заставки и появления контента -->
+    <script>
+        window.onload = function() {
+            const splash = document.querySelector('.splash');
+            const menuContainer = document.querySelector('.menu-container');
+            const menu = document.querySelector('.menu');
+            const content = document.querySelector('.content');
+            const video = document.getElementById('background-video');
+            const languageSwitcherContainer = document.querySelector('.language-switcher-container');
+
+            // Показываем заставку
+            setTimeout(() => {
+                splash.style.opacity = 1;
+            }, 500); // Задержка перед началом появления заставки
+
+            // Переход к изображению, показ изображения, затем снова к черному цвету
+            setTimeout(() => {
+                splash.style.opacity = 0;
+                setTimeout(() => {
+                    // Черный экран на 1 секунду
+                    document.body.style.backgroundColor = 'black';
+                    setTimeout(() => {
+                        menuContainer.style.top = '0'; // Показываем контейнер меню выезжая сверху
+
+                        // Слушаем окончание анимации появления контейнера меню
+                        menuContainer.addEventListener('transitionend', function() {
+                            content.classList.add('show'); // Показываем содержимое
+                            languageSwitcherContainer.classList.add('show'); // Показываем переключатель языка
+                            video.style.opacity = 1; // Показываем видео
+                            video.play(); // Начинаем воспроизведение видео
+
+                            // Показываем меню с анимацией выезда сверху
+                            setTimeout(() => {
+                                menu.classList.add('show');
+                            }, 100); // Небольшая задержка для корректной анимации
+                        }, { once: true }); // { once: true } гарантирует, что слушатель сработает только один раз
+                    }, 1000); // Задержка перед показом контейнера меню и содержимого
+                }, 1000); // Задержка перед черным экраном
+            }, 2500); // Время исчезновения заставки (1 секунда на появление, 1 секунда показ, 1 секунда на исчезновение)
+
+            // Скрываем заставку окончательно
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 4500); // Время после которого скрываем заставку
+        }
+
+        // Функция для плавного затемнения
+        function showFadeOverlay() {
+            const fadeOverlay = document.getElementById('fade-overlay');
+            fadeOverlay.style.opacity = 1;
+
+            // Перейти на другую страницу через секунду
+            setTimeout(() => {
+                window.location.href = 'Work.html';
+            }, 1000);
+        }
+
+        // Добавляем слушатель для взаимодействия с пользователем на мобильных устройствах
+        document.addEventListener('touchstart', function() {
+            const video = document.getElementById('background-video');
+            if (video.paused) {
+                video.play();
+            }
+        });
+
+        document.getElementById('language-selector').addEventListener('change', function(event) {
+            const selectedLanguage = event.target.value;
+            loadLanguage(selectedLanguage);
+        });
+
+        function loadLanguage(lang) {
+            fetch(`translations/${lang}.json`)
+                .then(response => response.json())
+                .then(translations => {
+                    applyTranslations(translations);
+                    localStorage.setItem('selectedLanguage', lang);
+                });
+        }
+
+        function applyTranslations(translations) {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                element.textContent = getTranslation(key, translations);
+            });
+        }
+
+        function getTranslation(key, translations) {
+            return key.split('.').reduce((obj, i) => obj[i], translations);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'eng';
+            loadLanguage(savedLanguage);
+        });
+    </script>
+</body>
+</html>
