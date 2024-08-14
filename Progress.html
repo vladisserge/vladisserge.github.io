@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Is Strange Fan Reboot</title>
+    <style>
+        @font-face {
+            font-family: 'Helvetica';
+            src: url('Fonts/Helvetica.ttf') format('truetype');
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: opacity 1s ease-out;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .overlay img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 75%;
+            max-height: 75%;
+            opacity: 0;
+            animation: fadeInOut 2s ease-out forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .wrapper {
+            position: relative;
+            width: 75%;
+            height: 75%;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0; /* Начальное состояние: скрыто */
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        .preview-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('C:\Users\vladi\OneDrive\Desktop\Project\Site\New files\Pictures\miro_preview.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        .loading-spinner {
+            position: absolute;
+            bottom: 85px; /* Поднимем спиннер немного выше */
+            width: 50px; /* Ширина спиннера */
+            height: 50px; /* Высота спиннера */
+            border: 5px solid gray; /* Окантовка спиннера */
+            border-top: 5px solid black; /* Цвет вращающейся части спиннера */
+            border-radius: 50%; /* Круглая форма спиннера */
+            animation: spin 1s linear infinite; /* Ускоренное вращение спиннера */
+            opacity: 0; /* Начальное состояние: скрыто */
+            transition: opacity 1s ease-in-out; /* Плавное изменение прозрачности */
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .miro-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 1s ease-in-out; /* Плавный переход */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заставка -->
+    <div class="overlay">
+        <img src="C:\Users\vladi\OneDrive\Desktop\Project\Site\New files\Pictures\lisfr_logo.png" alt="Loading Image">
+    </div>
+
+    <!-- Основной контент -->
+    <div class="wrapper" id="wrapper">
+        <div class="preview-container" id="previewContainer">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+        </div>
+        <div class="miro-container" id="miroContainer">
+            <iframe src="https://miro.com/app/board/uXjVN0zJw3U=" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Задержка перед началом работы с основным контентом
+            setTimeout(function() {
+                document.querySelector('.overlay').style.opacity = '0';
+                document.getElementById('wrapper').style.opacity = '1';
+                
+                // Скрыть заставку после завершения анимации
+                setTimeout(function() {
+                    document.querySelector('.overlay').style.display = 'none';
+                }, 1000); // Убедитесь, что overlay полностью исчез
+
+                // Показать спиннер плавно через 1 секунду после начала показа
+                setTimeout(function() {
+                    document.getElementById('loadingSpinner').style.opacity = '1';
+                }, 1000); // Через 1 секунду после начала показа заставки
+
+                // Плавное исчезновение спиннера за 1 секунду перед началом анимации исчезновения заставки
+                setTimeout(function() {
+                    document.getElementById('loadingSpinner').style.opacity = '0';
+                }, 9000); // Заставка показывается 10 секунд, спиннер исчезает за 1 секунду до конца
+
+                setTimeout(function() {
+                    document.getElementById('previewContainer').style.opacity = '0';
+                    document.getElementById('miroContainer').style.opacity = '1';
+                }, 10000); // Заставка показывается 10 секунд
+            }, 2000); // Задержка в 2 секунды перед началом исчезновения заставки
+        };
+    </script>
+</body>
+</html>
